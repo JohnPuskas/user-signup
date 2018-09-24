@@ -26,12 +26,37 @@ def validate():
     password_error = ''
     password_mismatch = ''
     email_error = ''
+    email_space_error = ''
 
-################ REMEMBER to inform the user of what they did wrong!!!!! ####################
+
+    # Addresses password length requirements.
+    # I placed password conditionals 1st so username & email
+    #  errors wouldn't reset password to empty and therefore also
+    #  trigger password length error
+    if len(password) < 3 or len(password) > 20:
+        password_error = "Password must be between 3 and 20 characters"
+        password = ''
+        re_enter = ''
+
+    # Addresses invalid use of space character
+    else:
+        for char in password:
+            if char == ' ':
+                password_error = "Password must not contain spaces"          
+                password = ''
+                re_enter = '' 
+                break               
+    
+    # Addresses mismatched password confirmation
+    if password != re_enter:
+        password_mismatch = "Passwords don't match"
+        password = ''
+        re_enter = ''   
+
 
     # Addresses username length requirements
     if len(username) < 3 or len(username) > 20:
-        username_error = "That's not a valid username"
+        username_error = "Username must be between 3 and 20 characters"
         username = ''
         password = ''
         re_enter = ''
@@ -40,34 +65,11 @@ def validate():
     else:
         for char in username:
             if char == ' ':
-                username_error = "That's not a valid username"
+                username_error = "No spaces allowed in username"
                 username = ''
                 password = ''
                 re_enter = '' 
                 break               
-
-
-    # Addresses password length requirements
-    if len(password) < 3 or len(password) > 20 or " " in password.split():
-        password_error = "That's not a valid password"
-        password = ''
-        re_enter = ''
-
-    # Addresses invalid use of space character
-    elif password_error == '':
-        for char in password:
-            if char == ' ':
-                password_error = "That's not a valid password"          
-                password = ''
-                re_enter = '' 
-                break               
-    
-    # Addresses mismatched password confirmation
-    else:
-        if password != re_enter:
-            password_mismatch = "Passwords don't match"
-            password = ''
-            re_enter = ''   
 
 
     # Addresses allowing no email entry in form
@@ -76,28 +78,36 @@ def validate():
         password = ''
         re_enter = '' 
     
-    # Addresses email length requirements & necessity of '@' and "." characters
-    elif email != '':
-        if 3 > len(email) or len(email) > 20 or "@" not in email.split() or "." not in email.split():
-            email_error = "That's not a valid email"
+    else:
+        # Addresses email length requirements 
+        if 3 > len(email) or len(email) > 20:
+            email_error = "Email must be between 3 and 20 characters"
             email = ''
             password = ''
             re_enter = ''
 
-    # Addresses invalid use of space character
-    else:
-        for char in email:
-            if char == ' ':
-                email_error = "That's not a valid email"     
+        else:
+            # Addresses necessity of '@' and "." characters
+            if "@" not in list(email) or "." not in list(email):
+                email_error = "Email must contain '@' and '.' to be valid"
+                email = ''
                 password = ''
-                re_enter = '' 
-                break                        
+                re_enter = ''            
+            # Addresses invalid use of space character
+            for char in email:
+                if char == ' ':
+                    email_space_error = "Email must not contain spaces"     
+                    email = ''
+                    password = ''
+                    re_enter = ''                         
+                    break
 
     return render_template('signup.html',
         username_error=username_error,
         password_error=password_error, 
         mismatch_error=password_mismatch,
-        email_error=email_error, 
+        email_error=email_error,
+        email_space_error=email_space_error, 
         username=username, 
         password=password,
         password_match=re_enter, 
@@ -109,7 +119,3 @@ def validate():
 
 
 app.run()
-
-########### NOTES ######################
-# signup is accepting spaces. email is giving error message when it shouldn't. The culprit is likely in how I used the str.split()
-#  method in the 'if' conditionals for all of those input fields
