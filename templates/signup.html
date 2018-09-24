@@ -1,29 +1,50 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <title>Signup</title>
+    
+    <style>
+        .error {
+            color: red;
+        }
+
+    /*  FIGURE OUT A WAY TO GET INPUT FIELDS TO LINE UP
+        
+        input{
+            display: inline-block;
+        }
+    */
+    </style>
+
+{% endblock %}
+
+
 {% block content %}
     
     <h1>Signup</h1>
-    <form method='POST'
+    <form method='POST'>
         <label>
             Username
-            <input type="text" name='username' />
+            <input name='username' type="text" value='{{username}}'  />
         </label>
+        <p class="error">{{username_error}}</p>
         <label>
             Password
-            <input type="password" name="pw" />
+            <input name="pw"  type="password" value='{{password}}' />
         </label>
+        <p class="error">{{password_error}}</p>
         <label>
             Verify Password
-            <input type="password" name="verify" />
+            <input name="re-enter" type="password" value='{{password_match}}' />
         </label>
+        <p class="error">{{mismatch_error}}</p>
         <label>
             Email (optional)
-            <input type="text" name="email" />
+            <input name="email" type="text" value='{{email}}' />
         </label>
-        <label>
-            Submit Query
-            <input type="submit" />
-        </label>
+        <p class="error">{{email_error}}</p>
+            <button type="submit">Sign Up!</button>
+        
     </form>
 
 {% endblock %}
