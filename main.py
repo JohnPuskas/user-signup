@@ -102,20 +102,36 @@ def validate():
                     re_enter = ''                         
                     break
 
-    return render_template('signup.html',
-        username_error=username_error,
-        password_error=password_error, 
-        mismatch_error=password_mismatch,
-        email_error=email_error,
-        email_space_error=email_space_error, 
-        username=username, 
-        password=password,
-        password_match=re_enter, 
-        email=email)
-
-# @app.route("/welcome/?username=####")
-# def welcome():
     
+    # Either redirects to welcome page or reloads signup
+    if (not username_error and 
+        not password_error and
+        not password_mismatch and
+        not email_error and
+        not email_space_error):
+
+        return redirect('/welcome?username={0}'.format(username))
+
+    else:
+        return render_template(
+            'signup.html',
+            username_error=username_error,
+            password_error=password_error, 
+            mismatch_error=password_mismatch,
+            email_error=email_error,
+            email_space_error=email_space_error, 
+            username=username, 
+            password=password,
+            password_match=re_enter, 
+            email=email
+            )
+
+
+
+@app.route("/welcome")
+def welcome():
+    user = request.args.get('username')
+    return render_template('welcome.html', username=user)
 
 
 app.run()
