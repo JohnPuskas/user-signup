@@ -88,8 +88,8 @@ def validate():
 
         else:
             # Addresses necessity of '@' and "." characters
-            if "@" not in list(email) or "." not in list(email):
-                email_error = "Email must contain '@' and '.' to be valid"
+            if (list(email)).count("@") != 1 or  (list(email)).count(".") != 1:
+                email_error = "Email must contain exactly one '@' and one '.' to be valid"
                 email = ''
                 password = ''
                 re_enter = ''            
