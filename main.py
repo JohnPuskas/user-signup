@@ -1,5 +1,4 @@
 from flask import Flask, request, redirect, render_template
-import string
 
 
 app= Flask(__name__)
@@ -26,7 +25,6 @@ def validate():
     password_error = ''
     password_mismatch = ''
     email_error = ''
-    email_space_error = ''
 
 
     # Addresses password length requirements.
@@ -86,29 +84,29 @@ def validate():
             password = ''
             re_enter = ''
 
+        # Addresses necessity of '@' and "." characters
         else:
-            # Addresses necessity of '@' and "." characters
             if (list(email)).count("@") != 1 or  (list(email)).count(".") != 1:
                 email_error = "Email must contain exactly one '@' and one '.' to be valid"
                 email = ''
                 password = ''
                 re_enter = ''            
             # Addresses invalid use of space character
-            for char in email:
-                if char == ' ':
-                    email_space_error = "Email must not contain spaces"     
-                    email = ''
-                    password = ''
-                    re_enter = ''                         
-                    break
+            else:
+                for char in email:
+                    if char == ' ':
+                        email_error = "Email must not contain spaces"     
+                        email = ''
+                        password = ''
+                        re_enter = ''                         
+                        break
 
     
     # Either redirects to welcome page or reloads signup
     if (not username_error and 
         not password_error and
         not password_mismatch and
-        not email_error and
-        not email_space_error):
+        not email_error):
 
         return redirect('/welcome?username={0}'.format(username))
 
@@ -119,7 +117,6 @@ def validate():
             password_error=password_error, 
             mismatch_error=password_mismatch,
             email_error=email_error,
-            email_space_error=email_space_error, 
             username=username, 
             password=password,
             password_match=re_enter, 
